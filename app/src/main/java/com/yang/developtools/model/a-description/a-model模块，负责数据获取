@@ -1,0 +1,9 @@
+
+model模块是数据获取模块
+
+1、entity是bean类的包
+    --base是bean中的基类
+    --parser是bean中专门用来解析网络数据的类
+2、nettool是网络访问层
+3、core是访问入口部分
+    --callback是网络访问的回调，用于给外部调用时异步获取结果
