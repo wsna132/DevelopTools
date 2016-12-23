@@ -75,6 +75,7 @@ public class RefreshLoadMoreActivity extends AppCompatActivity {
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
 
+
         mStrings = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             mStrings.add("我是第" + i + "个。");

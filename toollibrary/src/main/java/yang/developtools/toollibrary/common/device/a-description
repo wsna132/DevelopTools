@@ -1,0 +1,5 @@
+这个目录用于获取一些设备方面的信息
+
+DeviceLocalInfo 获取手机硬件方面的一些信息
+
+AppLocalInfo    获取手机软件方面的信息
