@@ -1,1 +1,1 @@
-include ':app', ':toollibrary', ':demowidgetlist'
+include ':app', ':toollibrary', ':demowidgetlist', ':demopullrefresh'
