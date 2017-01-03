@@ -16,6 +16,9 @@
 package yang.developtools.toollibrary.common.widget.listview;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.IntDef;
 
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +28,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.ImageView;
 
 
 import java.lang.annotation.Retention;
@@ -32,6 +36,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
+import yang.developtools.toollibrary.common.device.AppLocalInfo;
 import yang.developtools.toollibrary.common.widget.listview.touch.DefaultItemTouchHelper;
 import yang.developtools.toollibrary.common.widget.listview.touch.OnItemMoveListener;
 import yang.developtools.toollibrary.common.widget.listview.touch.OnItemMovementListener;
@@ -427,4 +432,13 @@ public class SwipeMenuRecyclerView extends RecyclerView {
         }
         return super.onTouchEvent(e);
     }
+
+
+
+
+
+
+    /*********************************************以上是侧滑移出、长按拖动部分的逻辑**********************************************************/
+
+
 }
