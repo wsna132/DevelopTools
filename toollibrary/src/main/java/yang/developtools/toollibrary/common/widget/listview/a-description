@@ -1,0 +1,5 @@
+这个文件夹下面是RecyclerView的左滑右划功能以及长按拖动的View
+
+调用类为：SwipeMenuRecyclerView
+
+使用示例项目为：demowidgetlist

@@ -1,1 +1,3 @@
-用于下拉刷新的控件
+用于下拉刷新的控件,使用类为：PtrFrameLayout
+
+以及默认定义好了下拉头部的：PtrClassicFrameLayout
