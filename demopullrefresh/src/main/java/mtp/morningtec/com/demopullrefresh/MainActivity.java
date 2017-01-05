@@ -1,9 +1,29 @@
 package mtp.morningtec.com.demopullrefresh;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.bumptech.glide.util.Util;
+
+import org.w3c.dom.Text;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import yang.developtools.toollibrary.common.device.AppLocalInfo;
 import yang.developtools.toollibrary.common.widget.pullrefresh.PtrClassicDefaultHeader;
 import yang.developtools.toollibrary.common.widget.pullrefresh.PtrClassicFrameLayout;
 import yang.developtools.toollibrary.common.widget.pullrefresh.PtrDefaultHandler;
@@ -14,22 +34,29 @@ public class MainActivity extends AppCompatActivity {
 
     private PtrFrameLayout pullLayout;
     private PtrClassicFrameLayout mPtrFrame;
+    private RecyclerView mCustomRecyclerView;
+
+    private MyAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        demoPtrClassicFrameLayout();//有默认刷新头部的
+        initView();
+//        demoInstallDataApk();
+//        demoPtrClassicFrameLayout();//有默认刷新头部的
         demoPtrFrameLayout();//没有默认刷新头部的
     }
 
+    private void initView(){
+        mCustomRecyclerView = (RecyclerView)findViewById(R.id.mCustomRecyclerView);
+        mCustomRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new MyAdapter();
+        mCustomRecyclerView.setAdapter(adapter);
+    }
 
     private void demoPtrClassicFrameLayout(){
         mPtrFrame = (PtrClassicFrameLayout)findViewById(R.id.material_style_ptr_frame);
-
-
-
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
@@ -59,6 +86,35 @@ public class MainActivity extends AppCompatActivity {
         }, 100);
     }
 
+    private void demoInstallDataApk(){
+//        try {
+//            copyApk(this, "Gquan.apk", getCacheDir().getAbsolutePath() + "/Gquan.apk");
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//        TextView text = (TextView)findViewById(R.id.text);
+//        text.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String cmd = "chmod 777 " +getCacheDir().getAbsolutePath() + "/Gquan.apk";
+//                try {
+//                    java.lang.Process pross = Runtime.getRuntime().exec(cmd);
+//                    int result = pross.exitValue();
+//                    if(result == 0){
+//                        //表示成功
+//                    }else{
+//                        pross.getErrorStream();//获取报错的数据流
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                intent.setDataAndType(Uri.fromFile(new File(getCacheDir().getAbsolutePath() + "/Gquan.apk")),
+//                        "application/vnd.android.package-archive");
+//                startActivity(intent);
+//            }
+//        });
+    }
 
     private void demoPtrFrameLayout(){
         pullLayout = (PtrFrameLayout)findViewById(R.id.material_style_ptr_frame);
@@ -85,6 +141,9 @@ public class MainActivity extends AppCompatActivity {
                 pullLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        TextView nnn = new TextView(MainActivity.this);
+                        nnn.setText("iAmNew");
+                        mCustomRecyclerView.addView(nnn);
                         pullLayout.refreshComplete();
                     }
                 },3000);
@@ -97,5 +156,74 @@ public class MainActivity extends AppCompatActivity {
         });
         //下拉时是否保持内部布局不下拉
 //        pullLayout.setPinContent(true);
+    }
+
+
+    /**
+     * 这个方法用于将需要安装的asstes下的apk拷贝到指定路径
+     * @param assetsName
+     * @param strOutFileName
+     */
+    private void copyApk(Context context, String assetsName, String strOutFileName)throws IOException {
+        SharedPreferences copy = context.getSharedPreferences("copyHistory",Context.MODE_PRIVATE);
+        if(copy.getBoolean("copyed",false))return;
+        InputStream myInput;
+        File gquanFile = new File(strOutFileName);
+        if(!gquanFile.exists()){
+            gquanFile.getParentFile().mkdirs();
+            gquanFile.createNewFile();
+        }
+        OutputStream myOutput = new FileOutputStream(strOutFileName);
+        myInput = context.getAssets().open(assetsName);
+        byte[] buffer = new byte[1024];
+        int length = myInput.read(buffer);
+        while(length > 0)
+        {
+            myOutput.write(buffer, 0, length);
+            length = myInput.read(buffer);
+        }
+        myOutput.flush();
+        myInput.close();
+        myOutput.close();
+        copy.edit().putBoolean("copyed",false).commit();
+    }
+
+    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
+
+        @Override
+        public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            TextView text = new TextView(MainActivity.this);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,AppLocalInfo.dip2px(MainActivity.this,20));
+//            params.height = AppLocalInfo.dip2px(MainActivity.this,20);
+//            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            text.setGravity(Gravity.CENTER);
+            text.setLayoutParams(params);
+            text.setHeight(AppLocalInfo.dip2px(MainActivity.this,40));
+            return new MyViewHolder(text);
+        }
+
+        @Override
+        public void onBindViewHolder(MyAdapter.MyViewHolder holder, int position) {
+            holder.tv.setText(position + "");
+        }
+
+        @Override
+        public int getItemCount() {
+            return 20;
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder
+        {
+
+            TextView tv;
+
+            public MyViewHolder(View view)
+            {
+                super(view);
+                tv = (TextView)view;
+            }
+
+
+        }
     }
 }

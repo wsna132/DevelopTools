@@ -2,8 +2,12 @@ package yang.developtools.toollibrary.base.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +37,9 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
 
     private int currentPage = 0;//当前页码
     private int pageSize = 20;//每页的数量
+    private final int loadMoreCount = 4;//距离多少个到底时可以加载更多
+
+    private int[] lastPositions;
 
 
 //    private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -123,6 +130,12 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
                 int topRowVerticalPosition =
                         (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
                 mCustomRecyclerView.setEnabled(topRowVerticalPosition >= 0);
+                //加载更多
+                if(canRecyclerViewLoadMore(recyclerView)){
+                    //先显示footView
+
+                    loadData(currentPage,pageSize);
+                }
             }
 
             @Override
@@ -131,6 +144,72 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
             }
         });
     }
+
+    /**
+     * 判断是否可以加载更多数据了
+     * @param recyclerView
+     * @return
+     */
+    private boolean canRecyclerViewLoadMore(RecyclerView recyclerView){
+        boolean canLoadMore = false;
+        //是否可以向下滑动
+        canLoadMore = !recyclerView.canScrollVertically(1);
+        canLoadMore = scrollToLoacMore(recyclerView);
+        return canLoadMore;
+    }
+
+    /**
+     * 根据还有多少项滑到底部来决定能否加载更多
+     * @param recyclerView
+     * @return
+     */
+    private boolean scrollToLoacMore(RecyclerView recyclerView){
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        //屏幕中最后一个可见子项的position
+        int lastVisibleItemPosition = getLayoutManagerLastVisiblePosition(layoutManager);
+        //当前RecyclerView的所有子项个数
+        int totalItemCount = layoutManager.getItemCount();
+        if(totalItemCount > loadMoreCount && lastVisibleItemPosition >= totalItemCount -loadMoreCount){//还差loadMoreCount项时，就加载更多
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取当前可见的是第几项
+     * @param layoutManagers
+     * @return
+     */
+    private int getLayoutManagerLastVisiblePosition(RecyclerView.LayoutManager layoutManagers){
+        RecyclerView.LayoutManager layoutManager = layoutManagers;
+        int lastVisibleItemPosition = -1;
+        //瀑布流布局
+        if(layoutManager instanceof StaggeredGridLayoutManager) {
+            StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
+            if (lastPositions == null) {
+                lastPositions = new int[staggeredGridLayoutManager.getSpanCount()];
+            }
+            staggeredGridLayoutManager.findLastVisibleItemPositions(lastPositions);
+            lastVisibleItemPosition = findMax(lastPositions);
+        }
+        if(layoutManager instanceof LinearLayoutManager || layoutManager instanceof GridLayoutManager){
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager)layoutManager;
+            //屏幕中最后一个可见子项的position
+            lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
+        }
+        return lastVisibleItemPosition;
+    }
+
+    private int findMax(int[] lastPositions) {
+        int max = lastPositions[0];
+        for (int value : lastPositions) {
+            if (value > max) {
+                max = value;
+            }
+        }
+        return max;
+    }
+
 
     /**
      * 刷新数据
@@ -151,6 +230,7 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
         if(null == mPullRefreshLayout)return;
         try{
             mPullRefreshLayout.refreshComplete();
+            currentPage++;
         }catch (Exception e){
             e.printStackTrace();
         }

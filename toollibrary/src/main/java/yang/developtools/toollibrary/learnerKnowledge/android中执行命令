@@ -1,0 +1,12 @@
+String cmd = "chmod 777 " +getCacheDir().getAbsolutePath() + "/Gquan.apk";
+                try {
+                    java.lang.Process pross = Runtime.getRuntime().exec(cmd);
+                    int result = pross.exitValue();
+                    if(result == 0){
+                        //表示成功
+                    }else{
+                        pross.getErrorStream();//获取报错的数据流
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
