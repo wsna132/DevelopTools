@@ -35,4 +35,7 @@ public abstract class BaseRecyclerView extends View{
      */
     public abstract void initViews();
 
+
+    public abstract void show(BaseRecyclerModel model);
+
 }
