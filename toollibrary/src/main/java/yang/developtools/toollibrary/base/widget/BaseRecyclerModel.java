@@ -7,16 +7,22 @@ package yang.developtools.toollibrary.base.widget;
 
 public abstract class BaseRecyclerModel {
 
-    private String mViewType = getClass().getName();
-
-    public String getViewType() {
-        return mViewType;
+    public BaseRecyclerModel(){
+        //注册自己的ViewType
+        BaseRecyclerPresenter.getInstance().registModel(this);
+        //绑定BaseRecyclerView
+        BaseRecyclerPresenter.getInstance().bindModelView(this,bindViewClass());
     }
 
-    public void setViewType(String mViewType) {
-        this.mViewType = mViewType;
+    public int getViewType() {
+        return BaseRecyclerPresenter.getInstance().getModelType(this);
     }
 
-    public abstract BaseRecyclerView createModelView(String mViewType);
+    /**
+     * 绑定用于在Adapter中显示的View
+     * @return
+     */
+    public abstract Class<BaseRecyclerView> bindViewClass();
+
 
 }

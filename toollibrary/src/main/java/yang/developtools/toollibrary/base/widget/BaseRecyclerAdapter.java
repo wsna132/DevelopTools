@@ -1,5 +1,6 @@
 package yang.developtools.toollibrary.base.widget;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,12 @@ public class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerAdapte
     private View mHeaderView;
     private View mFooterView;
 
+    private Context mContext;
+
     //构造函数
-    public BaseRecyclerAdapter(List<BaseRecyclerModel> list){
+    public BaseRecyclerAdapter(Context context, List<BaseRecyclerModel> list){
         this.mDatas = list;
+        this.mContext = context;
     }
 
     //HeaderView和FooterView的get和set函数
@@ -47,8 +51,9 @@ public class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerAdapte
     @Override
     public int getItemViewType(int position) {
         if (mHeaderView == null && mFooterView == null){
-            return TYPE_NORMAL;
+            return mDatas.get(position).getViewType();
         }
+        //因为用了下拉刷新的GroupView，所以这里暂时不需要
         if (position == 0){
             //第一个item应该加载Header
             return TYPE_HEADER;
@@ -57,8 +62,8 @@ public class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerAdapte
             //最后一个,应该加载Footer
             return TYPE_FOOTER;
         }
-//        return mDatas.get(position).getViewType();
-        return TYPE_NORMAL;
+        return mDatas.get(position).getViewType();
+//        return TYPE_NORMAL;
     }
 
     //创建View，如果是HeaderView或者是FooterView，直接在Holder中返回
@@ -70,28 +75,26 @@ public class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerAdapte
         if(mFooterView != null && viewType == TYPE_FOOTER){
             return new BaseHolder(mFooterView);
         }
-//        View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
-        View layout = null;
+        View layout = BaseRecyclerPresenter.getInstance().createView(mContext,viewType);
         return new BaseHolder(layout);
     }
 
     //绑定View，这里是根据返回的这个position的类型，从而进行绑定的，   HeaderView和FooterView, 就不同绑定了
     @Override
     public void onBindViewHolder(BaseRecyclerAdapter.BaseHolder holder, int position) {
-        if(getItemViewType(position) == TYPE_NORMAL){
-            if(holder instanceof BaseRecyclerAdapter.BaseHolder) {
-                //这里加载数据的时候要注意，是从position-1开始，因为position==0已经被header占用了
-//                ((BaseHolder)holder).tv.setText(mDatas.get(position-1));
-
-                //总觉得这里会有BUG
-                holder.showView.show(mDatas.get(position -1));
-                return;
-            }
+        if(getItemViewType(position) == TYPE_FOOTER){
             return;
         }else if(getItemViewType(position) == TYPE_HEADER){
             return;
         }else{
-            return;
+            if(holder instanceof BaseRecyclerAdapter.BaseHolder) {
+                //这里加载数据的时候要注意，是从position-1开始，因为position==0已经被header占用了
+//                ((BaseHolder)holder).tv.setText(mDatas.get(position-1));
+                //总觉得这里会有BUG
+                holder.showView.refreshShow(mDatas.get(position -1));
+                return;
+            }
+
         }
     }
 

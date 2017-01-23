@@ -22,7 +22,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import mtp.morningtec.com.demopullrefresh.baserecycler.User;
+import yang.developtools.toollibrary.base.widget.BaseRecyclerAdapter;
+import yang.developtools.toollibrary.base.widget.BaseRecyclerModel;
+import yang.developtools.toollibrary.base.widget.BaseRecyclerView;
 import yang.developtools.toollibrary.common.device.AppLocalInfo;
 import yang.developtools.toollibrary.common.widget.pullrefresh.PtrClassicDefaultHeader;
 import yang.developtools.toollibrary.common.widget.pullrefresh.PtrClassicFrameLayout;
@@ -37,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mCustomRecyclerView;
 
     private MyAdapter adapter;
+    private BaseRecyclerAdapter baseAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +59,15 @@ public class MainActivity extends AppCompatActivity {
         mCustomRecyclerView = (RecyclerView)findViewById(R.id.mCustomRecyclerView);
         mCustomRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter();
-        mCustomRecyclerView.setAdapter(adapter);
+
+        List<BaseRecyclerModel> views = new ArrayList<BaseRecyclerModel>();
+        for(int i = 0;i < 10;i++){
+            User user = new User();
+            user.name = i + "";
+        }
+        baseAdapter = new BaseRecyclerAdapter(this,views);
+
+        mCustomRecyclerView.setAdapter(baseAdapter);
     }
 
     private void demoPtrClassicFrameLayout(){
@@ -141,9 +156,9 @@ public class MainActivity extends AppCompatActivity {
                 pullLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        TextView nnn = new TextView(MainActivity.this);
-                        nnn.setText("iAmNew");
-                        mCustomRecyclerView.addView(nnn);
+//                        TextView nnn = new TextView(MainActivity.this);
+//                        nnn.setText("iAmNew");
+//                        mCustomRecyclerView.addView(nnn);
                         pullLayout.refreshComplete();
                     }
                 },3000);

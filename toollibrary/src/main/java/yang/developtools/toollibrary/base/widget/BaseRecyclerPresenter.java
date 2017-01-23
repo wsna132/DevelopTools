@@ -1,5 +1,8 @@
 package yang.developtools.toollibrary.base.widget;
 
+import android.content.Context;
+
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
 /**
@@ -8,11 +11,12 @@ import java.util.HashMap;
 
 public class BaseRecyclerPresenter {
 
-    private static BaseRecyclerPresenter mInstance;
+    private static volatile BaseRecyclerPresenter mInstance;
 
-    private int mCurrrntIndex = 0;
+    private int mCurrrntIndex = 3;
+    //用于注册model的viewType
     private HashMap<String,Integer> modelTypeBinder = new HashMap<String,Integer>();//用于注册model于viewType的关系
-    private HashMap<String,String> holderBinder = new HashMap<String,String>();//用于注册model与view的关系
+    private HashMap<Integer,Class> holderBinder = new HashMap<Integer,Class>();//用于注册viewType与view的关系
 
     private BaseRecyclerPresenter(){
 
@@ -20,7 +24,7 @@ public class BaseRecyclerPresenter {
 
     public static BaseRecyclerPresenter getInstance(){
         if(null == mInstance){
-            synchronized (mInstance){
+            synchronized (BaseRecyclerPresenter.class){
                 if(null == mInstance){
                     mInstance = new BaseRecyclerPresenter();
                 }
@@ -41,9 +45,41 @@ public class BaseRecyclerPresenter {
         mCurrrntIndex++;
     }
 
-    public void bindModelView(BaseRecyclerModel model,BaseRecyclerView view){
-        if(null != modelTypeBinder.get(model.getClass().getSimpleName()))return;
-        modelTypeBinder.put(model.getClass().getSimpleName(),view.getClass().getName());
+    public int getModelType(BaseRecyclerModel model){
+        if(null == modelTypeBinder.get(model.getClass().getSimpleName())){
+            registModel(model);
+        }
+        return modelTypeBinder.get(model.getClass().getSimpleName());
+    }
+
+    /**
+     * 绑定Model和View的关系
+     * @param model
+     * @param viewclass
+     */
+    public void bindModelView(BaseRecyclerModel model,Class viewclass){
+        if(null != holderBinder.get(model.getViewType()))return;
+        holderBinder.put(model.getViewType(),viewclass);
+    }
+
+    /**
+     * 创建指定的BaseRecyclerView对象
+     * @param context
+     * @param viewType
+     * @return
+     */
+    public BaseRecyclerView createView(Context context,int viewType){
+        if(null == holderBinder.get(viewType))return null;
+        //创建对象
+        try {
+            Class classType = holderBinder.get(viewType);
+            Constructor<BaseRecyclerView> con = classType.getConstructor(Context.class);
+            BaseRecyclerView obj = con.newInstance(context);
+            return obj;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
