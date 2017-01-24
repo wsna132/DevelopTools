@@ -6,7 +6,9 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
 /**
- * Created by czk on 2017/1/6.
+ * Created by yangjh on 2017/1/6.
+ * 主要用于BaseRecyclerView和BaseRecyclerModel的绑定
+ * 以及BaseRecyclerView的实例化
  */
 
 public class BaseRecyclerPresenter {

@@ -4,15 +4,18 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.util.zip.Inflater;
+
+import yang.developtools.toollibrary.common.device.DeviceLocalInfo;
 
 /**
  * Created by yangjh on 2017/1/5.
  * 用于BaseRecyclerAdapter的适配的View
  */
 
-public abstract class BaseRecyclerView<M extends BaseRecyclerModel> extends View{
+public abstract class BaseRecyclerView<M extends BaseRecyclerModel> extends LinearLayout{
 
     //布局的View
     private View mLayout;
@@ -36,7 +39,9 @@ public abstract class BaseRecyclerView<M extends BaseRecyclerModel> extends View
      * 初始化View
      */
     private void initView(Context context){
-        mLayout = LayoutInflater.from(context).inflate(getContentId(),null);
+        mLayout = LayoutInflater.from(context).inflate(getContentId(),this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+        setLayoutParams(params);
         initViews(mLayout);
     }
 
@@ -47,8 +52,8 @@ public abstract class BaseRecyclerView<M extends BaseRecyclerModel> extends View
         bindViewAndData(model);
     }
 
-    public <T extends View> T findView(int viewId){
-        return (T)findViewById(viewId);
+    public <T extends View> T findView(View view, int viewId){
+        return (T)(view.findViewById(viewId));
     }
 
     /**

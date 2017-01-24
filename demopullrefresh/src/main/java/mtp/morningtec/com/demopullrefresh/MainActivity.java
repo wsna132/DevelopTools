@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import mtp.morningtec.com.demopullrefresh.baserecycler.Dog;
 import mtp.morningtec.com.demopullrefresh.baserecycler.User;
 import yang.developtools.toollibrary.base.widget.BaseRecyclerAdapter;
 import yang.developtools.toollibrary.base.widget.BaseRecyclerModel;
@@ -64,10 +66,16 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0;i < 10;i++){
             User user = new User();
             user.name = i + "";
+            views.add(user);
+            Dog dog = new Dog();
+            dog.mName = "dog:" + i;
+            dog.Gender = "dogGender:" + i;
+            views.add(dog);
         }
         baseAdapter = new BaseRecyclerAdapter(this,views);
 
         mCustomRecyclerView.setAdapter(baseAdapter);
+//        mCustomRecyclerView.setAdapter(adapter);
     }
 
     private void demoPtrClassicFrameLayout(){
@@ -207,14 +215,18 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            TextView text = new TextView(MainActivity.this);
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,AppLocalInfo.dip2px(MainActivity.this,20));
-//            params.height = AppLocalInfo.dip2px(MainActivity.this,20);
-//            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            text.setGravity(Gravity.CENTER);
-            text.setLayoutParams(params);
-            text.setHeight(AppLocalInfo.dip2px(MainActivity.this,40));
-            return new MyViewHolder(text);
+//            TextView text = new TextView(MainActivity.this);
+//            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,AppLocalInfo.dip2px(MainActivity.this,20));
+//            text.setGravity(Gravity.CENTER);
+//            text.setLayoutParams(params);
+//            text.setHeight(AppLocalInfo.dip2px(MainActivity.this,40));
+
+            View layout = LayoutInflater.from(MainActivity.this).inflate(R.layout.layout_user_info,null);
+
+
+
+
+            return new MyViewHolder(layout);
         }
 
         @Override
@@ -230,12 +242,14 @@ public class MainActivity extends AppCompatActivity {
         class MyViewHolder extends RecyclerView.ViewHolder
         {
 
+            View layout;
             TextView tv;
 
             public MyViewHolder(View view)
             {
                 super(view);
-                tv = (TextView)view;
+                layout = view;
+                tv = (TextView)layout.findViewById(R.id.mName);
             }
 
 
