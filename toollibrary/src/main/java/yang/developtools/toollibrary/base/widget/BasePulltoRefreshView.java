@@ -14,6 +14,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import yang.developtools.toollibrary.R;
 import yang.developtools.toollibrary.common.widget.listview.SwipeMenuRecyclerView;
 import yang.developtools.toollibrary.common.widget.pullrefresh.PtrClassicDefaultHeader;
@@ -30,7 +33,8 @@ import yang.developtools.toollibrary.common.widget.pullrefresh.PtrUIHandler;
 public abstract class BasePulltoRefreshView extends LinearLayout{
 
     private PtrFrameLayout mPullRefreshLayout;//下拉刷新的载体
-    private SwipeMenuRecyclerView mCustomRecyclerView;//左滑右划以及长按拖动的载体
+    public RecyclerView mCustomRecyclerView;//左滑右划以及长按拖动的载体
+    private BaseRecyclerAdapter mBaseAdapter;//显示数据的Adapter
 
     private View header;//下拉刷新时头部的视图
 
@@ -39,7 +43,9 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
     private int pageSize = 20;//每页的数量
     private final int loadMoreCount = 4;//距离多少个到底时可以加载更多
 
-    private int[] lastPositions;
+    private int[] lastPositions;//用于计算还有多少项到底
+
+    private List<BaseRecyclerModel> mDatas = new ArrayList<BaseRecyclerModel>();
 
 
 //    private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -72,10 +78,20 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
     private void initView(Context context){
         View contentView = LayoutInflater.from(context).inflate(R.layout.widget_pull_to_refresh,this,true);
         mPullRefreshLayout = (PtrFrameLayout)contentView.findViewById(R.id.mPullRefreshLayout);
-        mCustomRecyclerView = (SwipeMenuRecyclerView)contentView.findViewById(R.id.mCustomRecyclerView);
-
+        mCustomRecyclerView = (RecyclerView)contentView.findViewById(R.id.mCustomRecyclerView);
         initPullRefresh();
         initScroll();
+        initAdapter(context);
+    }
+
+    private void initAdapter(Context context){
+        if(null == mBaseAdapter) {
+            mBaseAdapter = new BaseRecyclerAdapter(context,mDatas);
+            mCustomRecyclerView.setAdapter(mBaseAdapter);
+        }else{
+            mBaseAdapter.notifyAll();
+        }
+
     }
 
     /**
@@ -101,7 +117,9 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
         mPullRefreshLayout.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                refreshData();
+                mDatas.clear();
+                currentPage = 1;
+                loadData(currentPage,pageSize);
             }
 
             @Override
@@ -153,7 +171,7 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
     private boolean canRecyclerViewLoadMore(RecyclerView recyclerView){
         boolean canLoadMore = false;
         //是否可以向下滑动
-        canLoadMore = !recyclerView.canScrollVertically(1);
+//        canLoadMore = !recyclerView.canScrollVertically(1);
         canLoadMore = scrollToLoacMore(recyclerView);
         return canLoadMore;
     }
@@ -211,10 +229,10 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
     }
 
 
-    /**
-     * 刷新数据
-     */
-    public abstract void refreshData();
+//    /**
+//     * 刷新数据
+//     */
+//    public abstract void refreshData();
 
     /**
      * 加载数据
@@ -231,8 +249,24 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
         try{
             mPullRefreshLayout.refreshComplete();
             currentPage++;
+            initAdapter(getContext());
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 用于添加加载的数据
+     * @param models
+     */
+    public void addDatas(List<BaseRecyclerModel> models){
+        //添加数据前先刷新一次显示
+        initAdapter(getContext());
+        for(BaseRecyclerModel model:models){
+            if(mDatas.contains(model)){
+                continue;
+            }
+            mDatas.add(model);
         }
     }
 

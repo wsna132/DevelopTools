@@ -168,6 +168,10 @@ public class MainActivity extends AppCompatActivity {
 //                        nnn.setText("iAmNew");
 //                        mCustomRecyclerView.addView(nnn);
                         pullLayout.refreshComplete();
+
+                        Intent intent = new Intent(MainActivity.this,TestActivity.class);
+                        startActivity(intent);
+
                     }
                 },3000);
             }
@@ -175,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
                 return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+//                return false;
             }
         });
         //下拉时是否保持内部布局不下拉

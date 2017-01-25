@@ -4,19 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-    <!--&lt;!&ndash; 下拉刷新用控件 &ndash;&gt;-->
-    <!--<android.support.v4.widget.SwipeRefreshLayout-->
-        <!--android:id="@+id/mSwipeRefreshLayout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/mRecyclerView"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"/>-->
-
-    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
-
 
     <yang.developtools.toollibrary.common.widget.pullrefresh.PtrFrameLayout
         android:id="@+id/mPullRefreshLayout"
@@ -31,12 +18,12 @@
         cube_ptr:ptr_resistance="1.7"
         >
 
-        <yang.developtools.toollibrary.common.widget.listview.SwipeMenuRecyclerView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/mCustomRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="match_parent"
+            />
+
     </yang.developtools.toollibrary.common.widget.pullrefresh.PtrFrameLayout>
 
 

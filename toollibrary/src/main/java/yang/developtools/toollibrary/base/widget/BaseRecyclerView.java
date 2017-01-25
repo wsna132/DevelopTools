@@ -40,6 +40,7 @@ public abstract class BaseRecyclerView<M extends BaseRecyclerModel> extends Line
      */
     private void initView(Context context){
         mLayout = LayoutInflater.from(context).inflate(getContentId(),this);
+        //通过这种方式让自己的尺寸能够适应RecyclerView宽度
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
         initViews(mLayout);
