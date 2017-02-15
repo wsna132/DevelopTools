@@ -9,10 +9,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -94,11 +96,8 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
     private void initAdapter(Context context){
         if(null == mBaseAdapter) {
             mBaseAdapter = new BaseRecyclerAdapter(context,mDatas);
-            TextView foot = new TextView(context);
-            foot.setText("哈哈哈哈哈");
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-            foot.setLayoutParams(params);
-            mBaseAdapter.setFooterView(foot);
+
+            mBaseAdapter.setFooterView(initFootView());
             mCustomRecyclerView.setAdapter(mBaseAdapter);
         }else{
             mBaseAdapter.notifyDataSetChanged();
@@ -307,33 +306,45 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
      * @return
      */
     private View initHeadView(){
-        return new PtrClassicDefaultHeader(getContext());
-    }
-
-    /**
-     * 设置下拉刷新的头部View
-     * @param headView
-     */
-    public void setHeadView(View headView){
-        try {
-            if (headView instanceof PtrUIHandler) {
-                mPullRefreshLayout.removePtrUIHandler((PtrUIHandler)header);
-                header = headView;
-                mPullRefreshLayout.setHeaderView(header);//设置默认的下拉头部
-                mPullRefreshLayout.addPtrUIHandler((PtrUIHandler)header);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+        View headView = getRefreshHeadView();
+        if(null == headView){
+            return new PtrClassicDefaultHeader(getContext());
         }
+        if(!(headView instanceof PtrUIHandler)){
+            throw new RuntimeException("head view must instanceof PtrUIHandler");
+        }
+        return headView;
+    }
+
+    private View initFootView(){
+        View footView = getLoadMoreFootView();
+        if(null == footView){
+            // 新建脚部
+            LinearLayout footerLayout = new LinearLayout(getContext());
+            footerLayout.setGravity(Gravity.CENTER);
+            footerLayout.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            footerLayout.addView(new ProgressBar(getContext(), null, android.R.attr.progressBarStyleSmall));
+
+            TextView text = new TextView(getContext());
+            text.setText("正在加载...");
+            footerLayout.addView(text);
+            return footerLayout;
+        }
+        return footView;
     }
 
     /**
-     * 设置加载更多的View
-     * @param footView
+     * 用于获取下拉刷新用的headView
+     * @return
      */
-    public void setFootView(View footView){
+    public abstract View getRefreshHeadView();
 
-
-    }
+    /**
+     * 用于获取加载更多用的footView
+     * @return
+     */
+    public abstract View getLoadMoreFootView();
 
 }

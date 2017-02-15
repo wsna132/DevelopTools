@@ -2,6 +2,7 @@ package mtp.morningtec.com.demopullrefresh.pullrefresh;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,5 +46,15 @@ public class TestPull extends BasePulltoRefreshView {
                 refreshComplete();
             }
         },500);
+    }
+
+    @Override
+    public View getRefreshHeadView() {
+        return null;
+    }
+
+    @Override
+    public View getLoadMoreFootView() {
+        return null;
     }
 }
