@@ -33,13 +33,17 @@ public class TestPull extends BasePulltoRefreshView {
             @Override
             public void run() {
                 List list = new ArrayList();
-                for(int i = 0; i < 10; i++){
+                for(int i = getDataSize(); i < getDataSize() + 20; i++){
+                    if(i > 55){
+                        break;
+                    }
                     User user = new User();
-                    user.name = (page + i) + "";
+                    user.name = ( i) + "";
                     list.add(user);
                 }
                 addDatas(list);
+                refreshComplete();
             }
-        },3000);
+        },500);
     }
 }

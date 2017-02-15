@@ -11,8 +11,10 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +44,17 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
     private int currentPage = 0;//当前页码
     private int pageSize = 20;//每页的数量
     private final int loadMoreCount = 4;//距离多少个到底时可以加载更多
+    private boolean hasMoreData = true;//是否还有更多的数据可以加载
 
     private int[] lastPositions;//用于计算还有多少项到底
 
-    private List<BaseRecyclerModel> mDatas = new ArrayList<BaseRecyclerModel>();
+    protected List<BaseRecyclerModel> mDatas = new ArrayList<BaseRecyclerModel>();
 
+    //加载状态
+    private int loadStatus = LOAD_END;
+    private static int LOAD_END = 0;
+    private static int LOADING = 1;
 
-//    private SwipeRefreshLayout mSwipeRefreshLayout;
-//    private RecyclerView mRecyclerView;
 
     public BasePulltoRefreshView(Context context) {
         super(context);
@@ -79,6 +84,8 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
         View contentView = LayoutInflater.from(context).inflate(R.layout.widget_pull_to_refresh,this,true);
         mPullRefreshLayout = (PtrFrameLayout)contentView.findViewById(R.id.mPullRefreshLayout);
         mCustomRecyclerView = (RecyclerView)contentView.findViewById(R.id.mCustomRecyclerView);
+        mCustomRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+
         initPullRefresh();
         initScroll();
         initAdapter(context);
@@ -87,9 +94,14 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
     private void initAdapter(Context context){
         if(null == mBaseAdapter) {
             mBaseAdapter = new BaseRecyclerAdapter(context,mDatas);
+            TextView foot = new TextView(context);
+            foot.setText("哈哈哈哈哈");
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+            foot.setLayoutParams(params);
+            mBaseAdapter.setFooterView(foot);
             mCustomRecyclerView.setAdapter(mBaseAdapter);
         }else{
-            mBaseAdapter.notifyAll();
+            mBaseAdapter.notifyDataSetChanged();
         }
 
     }
@@ -100,10 +112,10 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
     private void initPullRefresh(){
         initPull();
         // 阻尼系数
-        mPullRefreshLayout.setResistance(1.7f);
+        mPullRefreshLayout.setResistance(4.0f);
         mPullRefreshLayout.setRatioOfHeaderHeightToRefresh(1.2f);//多少倍头部视图的高度后可以刷新
         mPullRefreshLayout.setDurationToClose(200);//滚回刷新中的高度所用时间
-        mPullRefreshLayout.setDurationToCloseHeader(1000);//刷新完成后缩回去所用时间
+        mPullRefreshLayout.setDurationToCloseHeader(500);//刷新完成后缩回去所用时间
 // default is false
         mPullRefreshLayout.setPullToRefresh(false);//能否下拉刷新
 // default is true
@@ -111,7 +123,9 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
     }
 
     private void initPull() {
-        header = initHeadView();
+        if(null == header) {
+            header = initHeadView();
+        }
         mPullRefreshLayout.addPtrUIHandler((PtrUIHandler)header);//设置下拉的数据监听
         mPullRefreshLayout.setHeaderView(header);//设置默认的下拉头部
         mPullRefreshLayout.setPtrHandler(new PtrHandler() {
@@ -119,6 +133,7 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
             public void onRefreshBegin(PtrFrameLayout frame) {
                 mDatas.clear();
                 currentPage = 1;
+                hasMoreData = true;
                 loadData(currentPage,pageSize);
             }
 
@@ -149,9 +164,10 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
                         (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
                 mCustomRecyclerView.setEnabled(topRowVerticalPosition >= 0);
                 //加载更多
-                if(canRecyclerViewLoadMore(recyclerView)){
+                if(canRecyclerViewLoadMore(recyclerView) && loadStatus == LOAD_END && hasMoreData){
                     //先显示footView
-
+                    loadStatus = LOADING;
+                    mBaseAdapter.showFootView();
                     loadData(currentPage,pageSize);
                 }
             }
@@ -172,7 +188,12 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
         boolean canLoadMore = false;
         //是否可以向下滑动
 //        canLoadMore = !recyclerView.canScrollVertically(1);
+        //首先判断滑动到的位置是否到了可以加载更多数据的地方
         canLoadMore = scrollToLoacMore(recyclerView);
+        //然后判断数据是否还有加载更多的余地
+        if(!hasMoreData){
+            canLoadMore = false;
+        }
         return canLoadMore;
     }
 
@@ -250,6 +271,8 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
             mPullRefreshLayout.refreshComplete();
             currentPage++;
             initAdapter(getContext());
+            mBaseAdapter.hideFootView();
+            loadStatus = LOAD_END;
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -261,13 +284,21 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
      */
     public void addDatas(List<BaseRecyclerModel> models){
         //添加数据前先刷新一次显示
-        initAdapter(getContext());
+//        initAdapter(getContext());
         for(BaseRecyclerModel model:models){
             if(mDatas.contains(model)){
                 continue;
             }
             mDatas.add(model);
         }
+        if(models.size() < pageSize){
+            hasMoreData = false;
+        }
+
+    }
+
+    public int getDataSize(){
+        return mDatas.size();
     }
 
     /**
@@ -275,8 +306,34 @@ public abstract class BasePulltoRefreshView extends LinearLayout{
      * 如果需要自定义，需要继承了  PtrUIHandler接口的View
      * @return
      */
-    public View initHeadView(){
+    private View initHeadView(){
         return new PtrClassicDefaultHeader(getContext());
+    }
+
+    /**
+     * 设置下拉刷新的头部View
+     * @param headView
+     */
+    public void setHeadView(View headView){
+        try {
+            if (headView instanceof PtrUIHandler) {
+                mPullRefreshLayout.removePtrUIHandler((PtrUIHandler)header);
+                header = headView;
+                mPullRefreshLayout.setHeaderView(header);//设置默认的下拉头部
+                mPullRefreshLayout.addPtrUIHandler((PtrUIHandler)header);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置加载更多的View
+     * @param footView
+     */
+    public void setFootView(View footView){
+
+
     }
 
 }

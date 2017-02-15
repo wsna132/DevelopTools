@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     private MyAdapter adapter;
     private BaseRecyclerAdapter baseAdapter;
 
+
+    List<BaseRecyclerModel> views = new ArrayList<BaseRecyclerModel>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         mCustomRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter();
 
-        List<BaseRecyclerModel> views = new ArrayList<BaseRecyclerModel>();
+
         for(int i = 0;i < 10;i++){
             User user = new User();
             user.name = i + "";
@@ -167,6 +170,17 @@ public class MainActivity extends AppCompatActivity {
 //                        TextView nnn = new TextView(MainActivity.this);
 //                        nnn.setText("iAmNew");
 //                        mCustomRecyclerView.addView(nnn);
+                        for(int i = 10;i < 20;i++){
+                            User user = new User();
+                            user.name = i + "";
+                            views.add(user);
+                            Dog dog = new Dog();
+                            dog.mName = "dog:" + i;
+                            dog.Gender = "dogGender:" + i;
+                            views.add(dog);
+                        }
+                        baseAdapter.notifyDataSetChanged();
+
                         pullLayout.refreshComplete();
 
                         Intent intent = new Intent(MainActivity.this,TestActivity.class);
@@ -225,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
 //            text.setGravity(Gravity.CENTER);
 //            text.setLayoutParams(params);
 //            text.setHeight(AppLocalInfo.dip2px(MainActivity.this,40));
-
             View layout = LayoutInflater.from(MainActivity.this).inflate(R.layout.layout_user_info,null);
 
 

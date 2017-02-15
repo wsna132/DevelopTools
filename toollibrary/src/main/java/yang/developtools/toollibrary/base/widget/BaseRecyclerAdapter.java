@@ -23,6 +23,7 @@ public class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerAdapte
     //HeaderView, FooterView
     private View mHeaderView;
     private View mFooterView;
+    private boolean hideFootView = false;
 
     private Context mContext;
 
@@ -60,7 +61,7 @@ public class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerAdapte
             //第一个item应该加载Header
             return TYPE_HEADER;
         }
-        if (position == getItemCount()-1 && null != mFooterView){
+        if (position == getItemCount()-1 && null != mFooterView && !hideFootView){
             //最后一个,应该加载Footer
             return TYPE_FOOTER;
         }
@@ -122,14 +123,41 @@ public class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerAdapte
     //返回View中Item的个数，这个时候，总的个数应该是ListView中Item的个数加上HeaderView和FooterView
     @Override
     public int getItemCount() {
+        if(mDatas.size() == 0){
+            return 0;
+        }
         if(mHeaderView == null && mFooterView == null){
             return mDatas.size();
-        }else if(mHeaderView == null && mFooterView != null){
+        }else if(mHeaderView == null && mFooterView != null && hideFootView){
+            return mDatas.size();
+        }else if(mHeaderView == null && mFooterView != null && !hideFootView){
             return mDatas.size() + 1;
         }else if (mHeaderView != null && mFooterView == null){
             return mDatas.size() + 1;
         }else {
             return mDatas.size() + 2;
+        }
+    }
+
+    /**
+     * 隐藏加载更多
+     */
+    public void hideFootView(){
+        if(null != mFooterView){
+//            mFooterView.setVisibility(View.GONE);
+            hideFootView = true;
+            notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * 隐藏加载更多
+     */
+    public void showFootView(){
+        if(null != mFooterView){
+//            mFooterView.setVisibility(View.VISIBLE);
+            hideFootView = false;
+            notifyDataSetChanged();
         }
     }
 }

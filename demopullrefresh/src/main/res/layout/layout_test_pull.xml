@@ -6,12 +6,12 @@
     >
 
 
-    <TestPull
+    <mtp.morningtec.com.demopullrefresh.pullrefresh.TestPull
         android:id="@+id/testpull"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@mipmap/ic_launcher"
-        ></TestPull>
+        ></mtp.morningtec.com.demopullrefresh.pullrefresh.TestPull>
 
 
 </LinearLayout>
