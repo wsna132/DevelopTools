@@ -1,0 +1,5 @@
+presenter是中间层，负责将实现细节和业务逻辑连接起来的粘合层。主要包括：
+
+Presenter——Presenter负责处理来自UI的事件（如用户点击等）和内层模块（如Interaactor等）的回调。
+
+Converter——Converter对象负责内层模型与外层模块的相互转换工作。
