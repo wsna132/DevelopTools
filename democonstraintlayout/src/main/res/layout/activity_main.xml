@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+<ImageView
+    android:id="@+id/im1"
+    android:layout_width="160px"
+    android:layout_height="160px"
+    android:src="@drawable/moren"
+    android:background="@color/colorAccent"
+    />
+    
+    
+    <!--<ImageView-->
+        <!--android:layout_width="36px"-->
+        <!--android:layout_height="37px"-->
+        <!--android:src="@drawable/c1"-->
+        <!--android:layout_below="@+id/im1"-->
+        <!--/>-->
+
+
+
+
+</RelativeLayout>

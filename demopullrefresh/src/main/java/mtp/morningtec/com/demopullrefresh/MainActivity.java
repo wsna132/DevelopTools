@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +60,14 @@ public class MainActivity extends AppCompatActivity {
 //        demoInstallDataApk();
 //        demoPtrClassicFrameLayout();//有默认刷新头部的
         demoPtrFrameLayout();//没有默认刷新头部的
+    }
+
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        Log.d("tag","RootLayout:" + name);
+
+
+        return super.onCreateView(name, context, attrs);
     }
 
     private void initView(){
