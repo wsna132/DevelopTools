@@ -1,5 +1,6 @@
 package mtp.morningtec.com.democonstraintlayout;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,12 +45,8 @@ public class MainActivity extends BaseAdaptionActivity {
         im1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ViewGroup.LayoutParams params = im1.getLayoutParams();
-                Log.d("tag","ShowParams:" + params);
-                Log.d("tag","ShowParamsData:" + params.width + ",params.height:" + params.height);
-                params.height = 100;
-                params.width = 100;
-                im1.setLayoutParams(params);
+                Intent intent = new Intent(MainActivity.this,Activity2.class);
+                startActivity(intent);
             }
         });
     }

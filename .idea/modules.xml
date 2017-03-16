@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DevelopTools.iml" filepath="$PROJECT_DIR$/DevelopTools.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demoactivitylifelistener/demoactivitylifelistener.iml" filepath="$PROJECT_DIR$/demoactivitylifelistener/demoactivitylifelistener.iml" />
       <module fileurl="file://$PROJECT_DIR$/democlean/democlean.iml" filepath="$PROJECT_DIR$/democlean/democlean.iml" />
       <module fileurl="file://$PROJECT_DIR$/democonstraintlayout/democonstraintlayout.iml" filepath="$PROJECT_DIR$/democonstraintlayout/democonstraintlayout.iml" />
       <module fileurl="file://$PROJECT_DIR$/demopullrefresh/demopullrefresh.iml" filepath="$PROJECT_DIR$/demopullrefresh/demopullrefresh.iml" />
