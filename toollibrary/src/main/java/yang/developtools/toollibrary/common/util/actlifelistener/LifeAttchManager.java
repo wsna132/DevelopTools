@@ -35,17 +35,39 @@ public class LifeAttchManager {
     /**
      * 开始监听生命周期
      */
-    public void ObserveAct(Activity activity , ActLifeListener actListener){
+    public void ObserveAct(Activity activity , ActListener actListener){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed()) {
             throw new IllegalArgumentException("You cannot start a observe for a destroyed activity");
         }
         if(!(Looper.myLooper() == Looper.getMainLooper())){
             throw new IllegalArgumentException("You must start a observe on mainThread");
         }
-        android.app.FragmentManager fm = activity.getFragmentManager();
-        SupportActLifeListenerFragment fragment = findFragment(fm,actListener);//找到绑定的Fragment
+//        FragmentManager fm = activity.getFragmentManager();
+        SupportActLifeListenerFragment fragment = getSupportActLifeListenerFragment(activity);//找到绑定的Fragment
         ActLifeListenerManager manager = findLifeListenerManager(fragment);//找到指定Fragment的ActLifeListenerManager
         manager.addLifeListener(actListener);//添加监听
+    }
+
+    /**
+     * 找到指定的Activity绑定的空白Fragment,如果没有则会自动绑定一个
+     * @param activity
+     * @return
+     */
+    public SupportActLifeListenerFragment getSupportActLifeListenerFragment(Activity activity){
+        FragmentManager fm = activity.getFragmentManager();
+        return findFragment(fm);
+    }
+
+    /**
+     * 找到用于监听生命周期的空白的Fragment
+     */
+    private SupportActLifeListenerFragment findFragment(FragmentManager fm){
+        SupportActLifeListenerFragment current = (SupportActLifeListenerFragment) fm.findFragmentByTag(FRAGMENT_TAG);
+        if (current == null) {//没有找到，则新建
+            current = new SupportActLifeListenerFragment();
+            fm.beginTransaction().add(current, FRAGMENT_TAG).commitAllowingStateLoss();//添加Fragment
+        }
+        return current;
     }
 
 
