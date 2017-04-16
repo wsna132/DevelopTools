@@ -29,6 +29,7 @@ public abstract class BaseAdaptionActivity extends BaseToolActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //初始化视图的尺寸
+        //自适应布局
         initAutoSize();
         super.onCreate(savedInstanceState);
     }
