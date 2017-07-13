@@ -11,7 +11,7 @@ public class LogUtil {
     private static final String TAG = "Debug_data";
 
     public static void logI(String logData){
-        isDebug
+
         Log.i(TAG,"log_data:" + logData);
     }
 
