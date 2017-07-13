@@ -82,17 +82,16 @@ public class AutoUtils {
 	}
 
 	public static void auto(View view){
-		if(view==null || displayWidth<1 || displayHeight<1)return;
+			if(view==null || displayWidth<1 || displayHeight<1)return;
 
-		AutoUtils.autoTextSize(view);
-		AutoUtils.autoSize(view);
-		AutoUtils.autoPadding(view);
-		AutoUtils.autoMargin(view);
+			AutoUtils.autoTextSize(view);
+			AutoUtils.autoSize(view);
+			AutoUtils.autoPadding(view);
+			AutoUtils.autoMargin(view);
 
-		if(view instanceof ViewGroup){
-			auto((ViewGroup)view);
-		}
-
+			if(view instanceof ViewGroup){
+				auto((ViewGroup)view);
+			}
 	}
 
 	private static void auto(ViewGroup viewGroup){

@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/democonstraintlayout/democonstraintlayout.iml" filepath="$PROJECT_DIR$/democonstraintlayout/democonstraintlayout.iml" />
       <module fileurl="file://$PROJECT_DIR$/demopullrefresh/demopullrefresh.iml" filepath="$PROJECT_DIR$/demopullrefresh/demopullrefresh.iml" />
       <module fileurl="file://$PROJECT_DIR$/demowidgetlist/demowidgetlist.iml" filepath="$PROJECT_DIR$/demowidgetlist/demowidgetlist.iml" />
+      <module fileurl="file://$PROJECT_DIR$/permissiontooldemo/permissiontooldemo.iml" filepath="$PROJECT_DIR$/permissiontooldemo/permissiontooldemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/toollibrary/toollibrary.iml" filepath="$PROJECT_DIR$/toollibrary/toollibrary.iml" />
     </modules>
   </component>

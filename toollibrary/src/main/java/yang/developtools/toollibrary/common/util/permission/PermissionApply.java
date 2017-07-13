@@ -8,8 +8,12 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import java.util.HashMap;
+
+import yang.developtools.toollibrary.common.util.actlifelistener.ActPermissionListener;
+import yang.developtools.toollibrary.common.util.actlifelistener.LifeAttchManager;
 
 /**
  * Created by yangjh on 2017/3/10.
@@ -26,6 +30,12 @@ public class PermissionApply {
     public PermissionApply(Activity activity){
         mActivity = activity;
         permissionUtil = new PermissionUtil();
+        LifeAttchManager.getInstance().ObserveAct(activity,new ActPermissionListener(){
+            @Override
+            public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+                PermissionApply.this.onRequestPermissionsResult(requestCode,permissions,grantResults);
+            }
+        });
     }
 
     /**
