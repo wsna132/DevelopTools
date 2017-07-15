@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 /**
- * Created by czk on 2017/1/25.
+ * Created by yangjh on 2017/1/25.
  */
 
 public class BasePullRefreshAndLoadMore extends LinearLayout {

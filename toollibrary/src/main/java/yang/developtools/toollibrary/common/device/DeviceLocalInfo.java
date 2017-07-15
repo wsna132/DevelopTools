@@ -159,30 +159,6 @@ public class DeviceLocalInfo {
         return android.os.Build.VERSION.RELEASE;
     }
 
-    /**
-     * 获取设备宽度（px）
-     * @param context
-     * @return
-     */
-    public static int deviceWidth(Context context) {
-        return context.getResources().getDisplayMetrics().widthPixels;
-    }
 
-    /**
-     * 获取设备高度（px）
-     * @param context
-     * @return
-     */
-    public static int deviceHeight(Context context) {
-        return context.getResources().getDisplayMetrics().heightPixels;
-    }
-
-    /**
-     * SD卡判断
-     * @return
-     */
-    public static boolean isSDCardAvailable() {
-        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-    }
 
 }

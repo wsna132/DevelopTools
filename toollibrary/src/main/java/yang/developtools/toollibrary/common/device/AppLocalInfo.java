@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
@@ -170,7 +171,7 @@ public class AppLocalInfo {
         /**
          * 如果存在SD卡
          */
-        if (DeviceLocalInfo.isSDCardAvailable() && root != null) {
+        if (SDCardUtils.isSDCardEnable() && root != null) {
             folder = new File(root, appName);
             if (!folder.exists()) {
                 folder.mkdirs();
@@ -193,18 +194,5 @@ public class AppLocalInfo {
         }
         return folder.getAbsolutePath();
     }
-
-    /**
-     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
-     *
-     * @param context
-     * @param dpValue 要转换的dp值
-     */
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
-    }
-
-
 
 }
