@@ -76,11 +76,12 @@ public class ActLifeListenerManager {
     public void onDestroy() {
         //倒过来循环防止删除时有影响
         for(int i = listeners.size()-1;i >= 0;i--){
-            if(listeners.get(i) instanceof ActLifeListener){
-                ActLifeListener listener = (ActLifeListener)listeners.get(i);
+            ActListener lisen = listeners.get(i);
+            if(lisen instanceof ActLifeListener){
+                ActLifeListener listener = (ActLifeListener)lisen;
                 listener.onDestroy();
-                recycleListener(listener);//回收防止持有页面对象
             }
+            recycleListener(lisen);//回收防止持有页面对象
         }
     }
 

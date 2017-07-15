@@ -32,30 +32,45 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         text = (TextView) findViewById(R.id.text);
-        final Button view = new Button(this);
-        view.setBackgroundColor(Color.RED);
-        final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(500,500);
-        ViewGroup group = getCanAddViewGroup(MainActivity.this);
-        group.addView(view,params);
+//        final Button view = new Button(this);
+//        view.setBackgroundColor(Color.RED);
+//        final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(500,500);
+//        ViewGroup group = getCanAddViewGroup(MainActivity.this);
+//        group.addView(view,params);
 
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-//                    ViewGroup group = getCanAddViewGroup(MainActivity.this);
-//                    group.addView(view,params);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+                boolean success=LauncherUtils.clearLanucher(MainActivity.this);
+                Toast.makeText(MainActivity.this,"清除结果：" + success,Toast.LENGTH_LONG).show();
             }
         });
+        TextView text2 = (TextView) findViewById(R.id.text2);
+        text2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //模拟Home键
+                LauncherUtils.startLauncher(MainActivity.this);
+            }
+        });
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(;;) {
+                    try {
+                        Thread.sleep(1000);
+                    }catch (Exception e){}
+                    Log.d("MainActivity", "i am run");
+                }
+            }
+        }).start();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        boolean show = isViewCovered(text);
-        Toast.makeText(this,"是否可见呢：" + MIUIUtils.isMIUI(),Toast.LENGTH_SHORT).show();
+//        boolean show = isViewCovered(text);
+//        Toast.makeText(this,"是否可见呢：" + MIUIUtils.isMIUI(),Toast.LENGTH_SHORT).show();
 //        windowCanShow(this);
 
     }
